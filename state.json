@@ -1,0 +1,14 @@
+{
+  "brews": [
+    {
+      "id": 1,
+      "mode": "scoby",
+      "label": "🌱 SCOBY #1",
+      "started_at": "2026-05-31T22:40:27.495102",
+      "notified": [],
+      "done_steps_log": []
+    }
+  ],
+  "pinned_message_id": null,
+  "update_offset": 0
+}
