@@ -1,4 +1,4 @@
-name: Kombucha Bot
+name: Cumbucha Bot
 
 on:
   # Страховочный cron — запустит если self-restart по какой-то причине не сработал
@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: kombucha-bot
+  group: cumbucha-bot
   cancel-in-progress: true  # Новый запуск отменяет предыдущий
 
 permissions:
-  contents: read
-  actions: write  # Нужно для self-restart через API
+  contents: write  # Нужно для записи state.json в репо
+  actions: write   # Нужно для self-restart через API
 
 jobs:
   bot:
@@ -33,10 +33,13 @@ jobs:
       - name: Install dependencies
         run: pip install python-telegram-bot==21.6 APScheduler==3.10.4
 
-      - name: Run Kombucha bot
+      - name: Run Cumbucha bot
         env:
           BOT_TOKEN:  ${{ secrets.BOT_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          GH_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO:    ${{ github.repository }}
+          GH_BRANCH:  ${{ github.ref_name }}
         run: |
           python bot.py --duration 20700
           # 20700с = 5ч 45м — оставляем ~10 мин на restart step
