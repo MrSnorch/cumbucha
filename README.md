@@ -1,6 +1,6 @@
-# 🍄 Kombucha Telegram Bot
+# 🍄 Cumbucha Telegram Bot
 
-Телеграм-бот для отслеживания стадий ферментации комбучи. Отправляет уведомления в канал и ведёт один закреплённый пост с расписанием.
+Телеграм-бот для отслеживания стадий ферментации камбучи. Отправляет уведомления в канал и ведёт один закреплённый пост с расписанием.
 
 ## Возможности
 
@@ -28,8 +28,8 @@
 ### 3. Склонируй репозиторий
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/kombucha-bot.git
-cd kombucha-bot
+git clone https://github.com/YOUR_USERNAME/cumbucha-bot.git
+cd cumbucha-bot
 ```
 
 ### 4. Установи зависимости
@@ -83,15 +83,15 @@ python bot.py
 
 ### VPS / systemd
 
-Создай файл `/etc/systemd/system/kombucha-bot.service`:
+Создай файл `/etc/systemd/system/cumbucha-bot.service`:
 
 ```ini
 [Unit]
-Description=Kombucha Telegram Bot
+Description=Cumbucha Telegram Bot
 After=network.target
 
 [Service]
-WorkingDirectory=/path/to/kombucha-bot
+WorkingDirectory=/path/to/cumbucha-bot
 ExecStart=/usr/bin/python3 bot.py
 Restart=always
 Environment=BOT_TOKEN=your_token_here
@@ -102,9 +102,9 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-sudo systemctl enable kombucha-bot
-sudo systemctl start kombucha-bot
-sudo systemctl status kombucha-bot
+sudo systemctl enable cumbucha-bot
+sudo systemctl start cumbucha-bot
+sudo systemctl status cumbucha-bot
 ```
 
 ---
@@ -143,7 +143,7 @@ sudo systemctl status kombucha-bot
 ## Структура файлов
 
 ```
-kombucha-bot/
+cumbucha-bot/
 ├── bot.py           # основной код
 ├── requirements.txt # зависимости
 ├── state.json       # создаётся автоматически, хранит состояние

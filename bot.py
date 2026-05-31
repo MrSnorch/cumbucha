@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kombucha Telegram Bot — полный гайд для новичков
+Cumbucha Telegram Bot — полный гайд для новичков
 Fermentation tracker with inline buttons, troubleshooting tips, beginner warnings.
 """
 
@@ -20,8 +20,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 log = logging.getLogger(__name__)
 
 STATE_FILE = Path("state.json")
-BOT_TOKEN = os.environ["BOT_TOKEN"]
-CHANNEL_ID = os.environ["CHANNEL_ID"]  # e.g. @mychannel or -100xxxxxxxxx
+BOT_TOKEN  = os.environ["BOT_TOKEN"]
+CHANNEL_ID = os.environ["CHANNEL_ID"]   # e.g. @mychannel or -100xxxxxxxxx
+GH_TOKEN   = os.environ.get("GH_TOKEN")
+GH_REPO    = os.environ.get("GH_REPO")  # e.g. "username/cumbucha-bot"
+GH_BRANCH  = os.environ.get("GH_BRANCH", "main")
 
 # ---------------------------------------------------------------------------
 # Schedules — (day_offset, step_key, emoji, title, body, buttons)
@@ -33,7 +36,7 @@ SCOBY_SCHEDULE = [
      "🫙 Стеклянная банка (не пластик, не алюминий)\n"
      "🧻 Накрыто тканью или марлей в несколько слоёв\n"
      "💧 Чай полностью остужен до комнатной температуры перед добавлением SCOBY\n"
-     "🍵 Добавил стартовую жидкость? (0,5 л комбучи из предыдущей варки — обязательно!)\n\n"
+     "🍵 Добавил стартовую жидкость? (0,5 л камбучи из предыдущей варки — обязательно!)\n\n"
      "⚠️ ГЛАВНОЕ: не двигай и не трогай банку первые 5–7 дней. SCOBY только начинает формироваться.",
      [("✅ Всё сделал, поехали!", "done"), ("❓ Что такое стартер?", "what_is_starter")]),
 
@@ -115,7 +118,7 @@ BREW_SCHEDULE = [
 
     (10, "brew_d10", "🍾", "День 10 — финальный дедлайн",
      "Разлей СЕГОДНЯ, если ещё не сделал!\n"
-     "Дольше 10–12 дней при 27°C = очень кислая / уксусная комбуча.\n\n"
+     "Дольше 10–12 дней при 27°C = очень кислая / уксусная камбуча.\n\n"
      "Как разлить правильно:\n\n"
      "1️⃣ Достань SCOBY и положи в миску\n"
      "2️⃣ Оставь 10–20% жидкости как стартер для следующей варки\n"
@@ -164,7 +167,7 @@ F2_SCHEDULE = [
      "Как открывать:\n"
      "🚿 Над раковиной\n"
      "🐌 Медленно, потихоньку откручивай\n"
-     "🍵 Наслаждайся домашней комбучей!\n\n"
+     "🍵 Наслаждайся домашней камбучей!\n\n"
      "Не забудь сразу запустить новую варку — /newbrew 🔄",
      [("🍵 Попробовал — вкусно!", "done"), ("🔁 Запускаю новую варку", "done"), ("⏰ Позже", "snooze2h")]),
 ]
@@ -177,11 +180,11 @@ CALLBACK_RESPONSES = {
     "thin_scoby":       "📏 Не переживай. Главное — температура 24–29°C и полный покой для банки. Дай ещё 5–7 дней.",
     "nothing_d3":       "😟 К дню 3 плёнка может ещё не образоваться — это нормально! Проверь температуру (нужно 24–29°C) и не двигай банку. Жди до дня 7.",
     "mold_alert":       "🆘 Плесень — это НЕ норма. Если видишь пушистые ЦВЕТНЫЕ пятна (зелёные, чёрные, розовые) — выбрасывай SCOBY и всю жидкость. Вымой банку с мылом, ошпарь кипятком. Начинай с нового SCOBY.",
-    "suspicious":       "⚠️ Опиши что видишь:\n• Белые/кремовые пузыри или плёнка = НОРМА\n• Коричневые нити снизу = НОРМА (дрожжи)\n• Пушистые ЦВЕТНЫЕ пятна = ПЛЕСЕНЬ → выбрасывай\n\nПравило: если сомневаешься — понюхай. Хорошая комбуча пахнет кисло-уксусно, но приятно.",
-    "too_sour":         "😬 Перебродило! Эту комбучу можно использовать как уксус для готовки или заправок. В следующий раз сократи время на 2–3 дня или следи с 5-го дня.",
+    "suspicious":       "⚠️ Опиши что видишь:\n• Белые/кремовые пузыри или плёнка = НОРМА\n• Коричневые нити снизу = НОРМА (дрожжи)\n• Пушистые ЦВЕТНЫЕ пятна = ПЛЕСЕНЬ → выбрасывай\n\nПравило: если сомневаешься — понюхай. Хорошая камбуча пахнет кисло-уксусно, но приятно.",
+    "too_sour":         "😬 Перебродило! Эту камбучу можно использовать как уксус для готовки или заправок. В следующий раз сократи время на 2–3 дня или следи с 5-го дня.",
     "ready_to_bottle":  "🍾 Время разливать! Не забудь оставить 10–20% жидкости как стартер. Запусти /newf2 для второй ферментации (газирование).",
     "fridge":           "❄️ В холодильнике брожение почти останавливается. Через 12+ часов можно пить — открывай медленно над раковиной!",
-    "what_is_starter":  "💧 Стартовая жидкость — это уже готовая кислая комбуча из предыдущей варки.\n\nПочему она ОБЯЗАТЕЛЬНА:\n• Сразу снижает pH нового чая\n• Защищает brew от плесени в первые дни\n• Без неё риск заражения очень высок\n\nНорма: 10–20% от объёма (на 2 л чая — 200–400 мл стартера). У тебя уже было 0,5 л — это хорошо!",
+    "what_is_starter":  "💧 Стартовая жидкость — это уже готовая кислая камбуча из предыдущей варки.\n\nПочему она ОБЯЗАТЕЛЬНА:\n• Сразу снижает pH нового чая\n• Защищает brew от плесени в первые дни\n• Без неё риск заражения очень высок\n\nНорма: 10–20% от объёма (на 2 л чая — 200–400 мл стартера). У тебя уже было 0,5 л — это хорошо!",
     "snooze2h":         "⏰ Хорошо! Загляни попозже.",
 }
 
@@ -189,14 +192,76 @@ CALLBACK_RESPONSES = {
 # State helpers
 # ---------------------------------------------------------------------------
 
+import base64
+import urllib.request
+import urllib.error
+
+def _gh_api(method: str, path: str, body: dict = None) -> dict | None:
+    """Minimal GitHub API call using only stdlib."""
+    url = f"https://api.github.com{path}"
+    data = json.dumps(body).encode() if body else None
+    req = urllib.request.Request(url, data=data, method=method)
+    req.add_header("Authorization", f"Bearer {GH_TOKEN}")
+    req.add_header("Accept", "application/vnd.github+json")
+    req.add_header("Content-Type", "application/json")
+    try:
+        with urllib.request.urlopen(req) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        log.error(f"GitHub API {method} {path} → {e.code}: {e.read().decode()}")
+        return None
+
+
+def _get_gh_file_sha() -> str | None:
+    """Get current SHA of state.json in repo (needed for updates)."""
+    result = _gh_api("GET", f"/repos/{GH_REPO}/contents/state.json?ref={GH_BRANCH}")
+    return result.get("sha") if result else None
+
+
 def load_state() -> dict:
+    default = {"brews": [], "pinned_message_id": None, "update_offset": 0}
+    if GH_TOKEN and GH_REPO:
+        result = _gh_api("GET", f"/repos/{GH_REPO}/contents/state.json?ref={GH_BRANCH}")
+        if result and "content" in result:
+            try:
+                raw = base64.b64decode(result["content"]).decode()
+                state = json.loads(raw)
+                # Also write locally so fast in-process reads don't need API calls
+                STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False))
+                log.info("State loaded from GitHub.")
+                return state
+            except Exception as e:
+                log.error(f"Failed to parse state from GitHub: {e}")
+        else:
+            log.info("No state.json in repo yet — starting fresh.")
+        return default
+    # Fallback: local file (for running locally)
     if STATE_FILE.exists():
         return json.loads(STATE_FILE.read_text())
-    return {"brews": [], "pinned_message_id": None, "update_offset": 0}
+    return default
 
 
 def save_state(state: dict):
+    # Always write locally for fast access
     STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False))
+    if not (GH_TOKEN and GH_REPO):
+        return
+    content_b64 = base64.b64encode(
+        json.dumps(state, indent=2, ensure_ascii=False).encode()
+    ).decode()
+    sha = _get_gh_file_sha()
+    body = {
+        "message": "chore: update state",
+        "content": content_b64,
+        "branch": GH_BRANCH,
+    }
+    if sha:
+        body["sha"] = sha
+    result = _gh_api("PUT", f"/repos/{GH_REPO}/contents/state.json", body)
+    if result:
+        log.info("State saved to GitHub.")
+    else:
+        log.error("Failed to save state to GitHub!")
 
 
 # ---------------------------------------------------------------------------
@@ -210,7 +275,7 @@ def make_keyboard(buttons: list) -> InlineKeyboardMarkup:
 
 
 def build_pinned_message(state: dict) -> str:
-    lines = ["🍄 *KOMBUCHA TRACKER*", ""]
+    lines = ["🍄 *CUMBUCHA TRACKER*", ""]
 
     for brew in state["brews"]:
         start = datetime.fromisoformat(brew["started_at"])
@@ -363,7 +428,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ---------------------------------------------------------------------------
 
 HELP_TEXT = (
-    "🍄 *Kombucha Bot — справка*\n\n"
+    "🍄 *Cumbucha Bot — справка*\n\n"
     "*Запуск варок:*\n"
     "/newscoby — выращивание SCOBY (с сегодня)\n"
     "/newbrew — первая ферментация\n"
@@ -385,7 +450,7 @@ TIPS_TEXT = (
     "Идеал 24–29°C. Холоднее 20°C = риск плесени.\n"
     "Зимой используй грелку для рассады.\n\n"
     "💧 *Стартовая жидкость обязательна*\n"
-    "10–20% от объёма кислой готовой комбучи.\n"
+    "10–20% от объёма кислой готовой камбучи.\n"
     "Без неё brew уязвим для плесени первые дни.\n\n"
     "🫙 *Только стекло*\n"
     "Никакого пластика или алюминия.\n\n"
