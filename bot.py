@@ -4,6 +4,7 @@ Kombucha Telegram Bot — полный гайд для новичков
 Fermentation tracker with inline buttons, troubleshooting tips, beginner warnings.
 """
 
+import argparse
 import json
 import os
 import logging
@@ -464,6 +465,11 @@ async def cmd_clear(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ---------------------------------------------------------------------------
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--duration", type=int, default=None,
+                        help="Shut down after N seconds (for GitHub Actions self-restart)")
+    args = parser.parse_args()
+
     state = load_state()
 
     if not state["brews"]:
@@ -502,7 +508,13 @@ def main():
     async def on_startup(application):
         scheduler.start()
         await update_pinned_post(application.bot, state)
-        log.info("Bot started.")
+        if args.duration:
+            # Schedule graceful shutdown after duration seconds
+            stop_at = datetime.now() + timedelta(seconds=args.duration)
+            scheduler.add_job(application.stop, "date", run_date=stop_at)
+            log.info(f"Bot started. Will shut down at {stop_at.strftime('%H:%M:%S')} for self-restart.")
+        else:
+            log.info("Bot started.")
 
     app.post_init = on_startup
     app.run_polling(drop_pending_updates=True)
