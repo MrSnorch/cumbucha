@@ -8,7 +8,14 @@
       "notified": [
         "sent_scoby_d0"
       ],
-      "done_steps_log": []
+      "done_steps_log": [
+        {
+          "step_key": "scoby_d0",
+          "action": "done",
+          "at": "2026-05-31T22:40:32.604852",
+          "by": "Эйнштейн"
+        }
+      ]
     }
   ],
   "pinned_message_id": 10,
