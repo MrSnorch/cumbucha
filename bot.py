@@ -288,9 +288,9 @@ def build_pinned_message(state: dict) -> str:
             "f2":    "🫧 Вторая ферментация",
         }
         lines.append(f"*{label}*")
-        lines.append(f"Начата: {start.strftime('%d.%m.%Y')} | {mode_labels[mode]}")
-
         now = datetime.now()
+        days_elapsed = (now.date() - start.date()).days
+        lines.append(f"Начата: {start.strftime('%d.%m.%Y')} | {mode_labels[mode]} | День {days_elapsed}")
         done_steps = brew.get("done_steps_log", [])
         done_keys = {d.get("step_key") for d in done_steps}
 
