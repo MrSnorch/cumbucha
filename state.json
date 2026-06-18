@@ -36,6 +36,14 @@
         "sent_brew_d0"
       ],
       "done_steps_log": []
+    },
+    {
+      "id": 3,
+      "mode": "brew",
+      "label": "⚗️ Ферментация #3",
+      "started_at": "2026-06-18T12:11:32.337716",
+      "notified": [],
+      "done_steps_log": []
     }
   ],
   "pinned_message_id": 10,
