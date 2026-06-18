@@ -42,7 +42,9 @@
       "mode": "brew",
       "label": "⚗️ Ферментация #3",
       "started_at": "2026-06-18T12:11:32.337716",
-      "notified": [],
+      "notified": [
+        "sent_brew_d0"
+      ],
       "done_steps_log": []
     }
   ],
