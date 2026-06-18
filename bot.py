@@ -514,7 +514,30 @@ async def cmd_newf2(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     state = load_state()
-    await update.message.reply_text(build_pinned_message(state), parse_mode="Markdown")
+    chat_id = str(update.effective_chat.id)
+    text = build_pinned_message(state)
+    pins = state.setdefault("status_pins", {})
+    existing_id = pins.get(chat_id)
+
+    if existing_id:
+        try:
+            await context.bot.edit_message_text(
+                chat_id=chat_id, message_id=existing_id,
+                text=text, parse_mode="Markdown",
+            )
+            return
+        except TelegramError:
+            pass  # Message was deleted — fall through to send a new one
+
+    msg = await update.message.reply_text(text, parse_mode="Markdown")
+    try:
+        await context.bot.pin_chat_message(
+            chat_id=chat_id, message_id=msg.message_id, disable_notification=True,
+        )
+    except TelegramError as e:
+        log.warning(f"Could not pin status message: {e}")
+    pins[chat_id] = msg.message_id
+    save_state(state)
 
 
 async def cmd_clear(update: Update, context: ContextTypes.DEFAULT_TYPE):
