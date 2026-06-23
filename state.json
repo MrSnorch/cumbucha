@@ -35,7 +35,8 @@
       "started_at": "2026-06-18T01:10:01.481487",
       "notified": [
         "sent_brew_d0",
-        "sent_brew_d2"
+        "sent_brew_d2",
+        "sent_brew_d5"
       ],
       "done_steps_log": []
     },
@@ -46,7 +47,8 @@
       "started_at": "2026-06-18T12:11:32.337716",
       "notified": [
         "sent_brew_d0",
-        "sent_brew_d2"
+        "sent_brew_d2",
+        "sent_brew_d5"
       ],
       "done_steps_log": []
     }
