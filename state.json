@@ -55,6 +55,14 @@
         "sent_brew_d10"
       ],
       "done_steps_log": []
+    },
+    {
+      "id": 4,
+      "mode": "brew",
+      "label": "⚗️ Ферментация #4",
+      "started_at": "2026-06-28T17:24:16.698655",
+      "notified": [],
+      "done_steps_log": []
     }
   ],
   "pinned_message_id": 10,
