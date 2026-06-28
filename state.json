@@ -37,7 +37,8 @@
         "sent_brew_d0",
         "sent_brew_d2",
         "sent_brew_d5",
-        "sent_brew_d7"
+        "sent_brew_d7",
+        "sent_brew_d10"
       ],
       "done_steps_log": []
     },
@@ -50,7 +51,8 @@
         "sent_brew_d0",
         "sent_brew_d2",
         "sent_brew_d5",
-        "sent_brew_d7"
+        "sent_brew_d7",
+        "sent_brew_d10"
       ],
       "done_steps_log": []
     }
