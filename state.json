@@ -1,5 +1,14 @@
 {
-  "brews": [],
+  "brews": [
+    {
+      "id": 1,
+      "mode": "brew",
+      "label": "⚗️ Ферментация #1",
+      "started_at": "2026-06-28T17:24:35.730897",
+      "notified": [],
+      "done_steps_log": []
+    }
+  ],
   "pinned_message_id": 10,
   "update_offset": 0,
   "status_pins": {
