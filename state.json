@@ -6,7 +6,8 @@
       "label": "⚗️ Ферментация #1",
       "started_at": "2026-06-28T17:24:35.730897",
       "notified": [
-        "sent_brew_d0"
+        "sent_brew_d0",
+        "sent_brew_d2"
       ],
       "done_steps_log": []
     }
